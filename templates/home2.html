@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        header {
+            background-color: rgba(76, 175, 80, 0.8); /* Semi-transparent header for visibility */
+            padding: 1em 0;
+            text-align: center;
+            color: white;
+            font-size: 1.5em;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #333;
+            padding: 10px 0;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+        nav a:hover {
+            background-color: #575757;
+        }
+        .background-image {
+            background-image: url("{{ url_for('static', filename='Far.jpg') }}");/* Replace with your image URL */
+            background-size: cover; /* Ensures the entire image is visible */
+            background-repeat: no-repeat;
+            background-position: stretch;
+            background-attachment: fixed;
+            height: 100vh; /* Use full viewport height */
+            margin-top: 0; /* Ensure it’s directly below the nav */
+        }
+        .content {
+            text-align: center;
+            padding: 2em;
+        }
+        .content h1 {
+            color: #333;
+            margin: 0 0 1em;
+            font-size: 1.5em;
+        }
+        .card-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 1em;
+        }
+        .card {
+            background-color: white;
+            color: #333;
+            width: 250px; /* Reduced width */
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .card h2 {
+            margin: 0 0 10px;
+            font-size: 1.2em; /* Smaller font size */
+            color: #4CAF50;
+        }
+        .card p {
+            font-size: 0.85em; /* Smaller text */
+            line-height: 1.4em;
+        }
+    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='app.css', v=2) }}">
+</head>
+<body class="page-home">
+    <header>
+        Welcome to APMandiPredict
+    </header>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/index">Price predictor</a>
+        <a href="/about_us">About us</a>
+    </nav>
+
+    <section class="home-hero background-image">
+        <div class="hero-copy">
+            <p class="eyebrow">Agricultural market intelligence</p>
+            <h1>Make your next crop decision with more confidence.</h1>
+            <p>Explore a market-specific price estimate shaped around your crop, season, and local conditions.</p>
+            <a class="primary-link" href="/index">Get a price estimate</a>
+        </div>
+    </section>
+
+    <div class="content">
+        <p class="eyebrow">AgriPredict</p>
+        <h2>Useful context for every estimate</h2>
+        <p>Choose a crop and market to see a prediction with the conditions behind it.</p>
+        <div class="card-container">
+            <div class="card">
+                <h2>About the Project</h2>
+                <p>Our project is designed to predict crop prices accurately by leveraging dynamic dropdowns and machine learning. This platform enables farmers and traders to make informed decisions by providing district-specific market insights, crop variety options, and predictive pricing data..</p>
+            </div>
+            <div class="card">
+                <h2>Our Features</h2>
+                <p><b>1. Crop Price Prediction:</b> Utilize advanced machine learning algorithms for accurate price forecasting. <br><Br>
+                   <b>2. Dynamic Dropdowns: </b>Seamless navigation through interconnected district, market, commodity, and variety options. <br><br>
+                   <b>3. Real-Time Insights:</b> Immediate results based on user inputs and up-to-date market trends.</p>
+            </div>
+            <div class="card">
+                <h2>FAQ</h2>
+                <p style="margin: 0; padding: 0; text-indent: 0; text-align: left;"><b>What is this project about?</b><br>
+                    This platform predicts crop prices using advanced algorithms while providing market-specific information.<br><br>
+                   <b>Who can benefit from this project?</b><br>
+                    Farmers, traders, policymakers, and researchers looking for accurate market data and predictions.<br><br>
+                   <b>How are crop prices predicted?</b><br>
+                    Our machine learning model analyzes historical data, current trends, and market conditions to predict future prices.<br><br>
+                    <b>What data sources are used for predictions?</b><br>
+                    We use reliable market data, historical price trends, and other agricultural inputs for model training.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

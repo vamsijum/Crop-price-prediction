@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Information Form</title>
+    <style>
+        /* Apply background image to the entire page */
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-image: url("{{ url_for('static', filename='second.jpg') }}");; /* Replace with your image file */
+            background-size: cover; /* Ensures the image covers the entire background */
+            background-position: center; /* Centers the background image */
+            background-attachment: fixed; /* Keeps the background fixed while scrolling */
+            color: white; /* Text color */
+            margin: 0;
+            height: 100vh; /* Ensures the background covers the whole height */
+        }
+
+        /* Style the form */
+        form {
+            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background for the form */
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        /* Style form inputs and select elements */
+        select, input {
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        /* Style form labels */
+        label {
+            display: block;
+            font-size: 16px;
+            color: white; /* Ensure label text is readable */
+        }
+
+        /* Style the submit button */
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        /* Button hover effect */
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Title and subtitle styles */
+        h1, h3 {
+            text-align: center;
+        }
+
+        /* For better layout on small screens */
+        @media (max-width: 600px) {
+            form {
+                width: 90%;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='app.css', v=2) }}">
+</head>
+<body class="page-form">
+    <header class="form-heading">
+        <p class="eyebrow">AgriPredict price forecast</p>
+        <h1>Tell us about your crop</h1>
+        <p>Choose the market and growing conditions for your estimate.</p>
+    </header>
+    <nav>
+        <a class="home-button" href="/">Home</a>
+    </nav>
+
+    <form id="marketForm" action="/predict" method="POST">
+        <!-- District Name Dropdown -->
+        <label for="district">District Name:</label>
+        <select id="district" name="district" onchange="populateMarketNames()">
+            <option  value="">Select District</option>
+            <option value="Anantapur">Anantapur</option>
+            <option value="Chittor">Chittor</option> <!-- Changed back to Chittor -->
+            <option value="Cuddapah">Cuddapah</option>
+            <option value="East Godavari">East Godavari</option>
+            <option value="Guntur">Guntur</option>
+            <option value="Krishna">Krishna</option>
+            <option value="Kurnool">Kurnool</option>
+            <option value="Nellore">Nellore</option>
+            <option value="Prakasam">Prakasam</option>
+            <option value="Srikakulam">Srikakulam</option>
+            <option value="Vijayanagaram">Vijayanagaram</option>
+            <option value="Visakhapatnam">Visakhapatnam</option>
+            <option value="West Godavari">West Godavari</option>
+        </select>
+
+        <!-- Market Name Dropdown -->
+        <label for="market">Market Name:</label>
+        <select id="market" name="market">
+            <option value="">Select Market</option>
+        </select>
+
+        <!-- Commodity Dropdown -->
+        <label for="commodity">Commodity:</label>
+        <select id="commodity" name="commodity" onchange="populateVarieties(); populateGrades();">
+            <option value="">Select Commodity</option>
+            <option value="Mango">Mango</option>
+            <option value="Onion">Onion</option>
+            <option value="Potato">Potato</option>
+            <option value="Tomato">Tomato</option>
+            <option value="Wheat">Wheat</option>
+            <option value="Banana">Banana</option>
+            <option value="Carrot">Carrot</option>
+            <option value="Groundnut">Groundnut</option>
+        </select>
+
+        <!-- Variety Dropdown -->
+        <label for="variety">Variety:</label>
+        <select id="variety" name="variety">
+            <option value="">Select Variety</option>
+        </select>
+
+        <!-- Grade Dropdown -->
+        <label for="grade">Grade:</label>
+        <select id="grade" name="grade">
+            <option value="">Select Grade</option>
+        </select>
+
+        <!-- Season-->
+        <label for="season">Season :</label>
+        <select id="season" name="season">
+             <option value="">Select Season</option>
+             <option value="Kharif">Kharif</option>
+             <option value="Rabi">Rabi</option>
+             <option value="Zaid">Zaid</option>
+        </select>
+
+        <!-- Other Input Fields -->
+        
+
+
+        <label for="temperature">Temperature (°C):</label>
+        <input type="number" id="temperature" name="temperature" step="0.01">
+
+    
+
+        <label for="rainfall">Rainfall (mm):</label>
+        <input type="number" id="rainfall" name="rainfall" step="0.01">
+
+        <label for="year">Year:</label>
+        <input type="number" id="year" name="year" min="1900" max="2100">
+
+        <label for="month">Month:</label>
+        <input type="number" id="month" name="month" min="1" max="12">
+
+        <label for="day">Day:</label>
+        <input type="number" id="day" name="day" min="1" max="31">
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <h3>Predicted Modal Price (Rs./Quintal):</h3>
+    <p id="modal-price"></p>
+
+    <script>
+        // Market Names for each District
+        const marketNames = {
+            "Anantapur": ["Dharmavaram", "Anantapur", "Gooti", "Guntakal", "Kadiri", "Kalyandurg", "Madakasira", "Penukonda", "Rayadurg", "Tenakallu", "Urvakonda"],
+            "Chittor": ["Bangarupalem", "Chittoor", "Puttur", "Tirupati", "Palamaner", "Chittoor(Rythu Bazar)", "Kalikiri", "Kuppam", "Madanapalli", "Mulakalacheruvu", "Piler", "Punganur", "Vayalapadu", "Pakala", "Srikalahasti", "Thottambedu"],
+            "Cuddapah": ["Rajampet", "Kamalapuram", "Cuddapah", "Pulivendala", "Rayachoti", "Lakkireddipally"],
+            "East Godavari": ["Rajahmundry", "Ambajipeta", "Ravulapelem", "Tuni"],
+            "Guntur": ["Kuchinapudi"],
+            "Krishna": ["Nuzvid", "Penamaluru", "Mylavaram", "Vijayawada", "Pamarru"],
+            "Kurnool": ["Koilkunta", "Alur", "Banaganapalli", "Dhone", "Kurnool", "Pattikonda", "Kurnool(Rythu Bazar)", "Allagadda", "Adoni", "Yemmiganur"],
+            "Nellore": ["Rapur", "Nellore", "Kavali"],
+            "Prakasam": ["Ongole(Rythu Bazar)"],
+            "Srikakulam": ["Ichapuram", "Rajam", "Hiramandalam", "Ponduru", "Palakonda", "Pathapatnam"],
+            "Vijayanagaram": ["Bobbili", "Gajapathinagaram", "Parvathipuram", "Kurupam", "Vijayanagaram", "Kothavalasa", "Pusapatirega"],
+            "Visakhapatnam": ["Paderu", "Visakhapatnam", "Narsipatnam", "Chintapally"],
+            "West Godavari": ["Eluru(P.Sri.Mkt)", "RBZ", "Eluru-II", "RBZ", "Kovvur", "Eluru", "Tadepalligudem", "Penugonda", "Tanuku"]
+        };
+
+        // Commodity Varieties
+        const commodityVarieties = {
+            "Banana": ["Ripe", "Other", "Desi(Bontha)", "Ordinary Big", "Karpura", "Amruthapani", "Medium", "Besrai", "Bhushavali(Pacha)", "Chakkarakeli(Red)", "Chakkarakeli(White)", "Harichal", "Elakki Bale", "Champa"],
+            "Carrot": ["Carrot", "Other"],
+            "Groundnut": ["Balli/Habbu", "Shelled (Bunch)", "TMV-2", "Local", "Big (With Shell)", "Other", "Bold Kernel", "Groundnut seed", "JL-24", "Kadiri-3", "Hybrid", "Natte", "M-13", "F.A.Q", "Madras", "Gejje", "VRI - 1"],
+            "Mango": ["Neelam", "Other", "Totapuri", "Badami", "Hapus(Alphaso)", "Keshar", "Raspuri", "Malgoa", "Safeda", "Surkha"],
+            "Onion": ["Beelary-Red", "Local", "1st Sort", "2nd Sort", "Bangalore-Small", "Onion", "Medium", "Other", "New Pune", "Hybrid", "Red", "Small"],
+            "Potato": ["Chips", "Potato", "Chandermukhi", "Desi", "Kuber", "Local", "(Red Nanital)", "Other", "Badshah", "Big"],
+            "Tomato": ["Deshi", "Hybrid", "Local", "Small", "Other"],
+            "Wheat": ["F.A.Q", "Other"]
+        };
+
+        // Commodity Grades
+        const commodityGrades = ["Medium", "Large", "FAQ", "Small"];
+
+        // Populate Market Names based on District
+        function populateMarketNames() {
+            const district = document.getElementById("district").value;
+            const marketDropdown = document.getElementById("market");
+            marketDropdown.innerHTML = '<option value="">Select Market</option>';
+            if (marketNames[district]) {
+                marketNames[district].forEach(market => {
+                    const option = document.createElement("option");
+                    option.value = market;
+                    option.textContent = market;
+                    marketDropdown.appendChild(option);
+                });
+            }
+        }
+
+        // Populate Varieties based on Commodity
+        function populateVarieties() {
+            const commodity = document.getElementById("commodity").value;
+            const varietyDropdown = document.getElementById("variety");
+            varietyDropdown.innerHTML = '<option value="">Select Variety</option>';
+            if (commodityVarieties[commodity]) {
+                commodityVarieties[commodity].forEach(variety => {
+                    const option = document.createElement("option");
+                    option.value = variety;
+                    option.textContent = variety;
+                    varietyDropdown.appendChild(option);
+                });
+            }
+        }
+
+        // Populate Grades
+        function populateGrades() {
+            const gradeDropdown = document.getElementById("grade");
+            gradeDropdown.innerHTML = '<option value="">Select Grade</option>';
+            commodityGrades.forEach(grade => {
+                const option = document.createElement("option");
+                option.value = grade;
+                option.textContent = grade;
+                gradeDropdown.appendChild(option);
+            });
+        }
+    </script>
+</body>
+</html>
